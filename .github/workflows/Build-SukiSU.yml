@@ -6,11 +6,11 @@ on:
         type: choice
         description: "补丁"
         required: true
-        default: 1_2_3
+        default: "1_2_3"
         options:
-          - 1_2_3
-          - 3_4_5
-          - 6_7_8
+          - "1_2_3"
+          - "3_4_5"
+          - "6_7_8"
       CPU:
         type: choice
         description: "分支"
