@@ -222,6 +222,20 @@ jobs:
           echo "正在打隐藏应用补丁"
           patch -p1 -F 3 < 69_hide_stuff.patch
 
+      - name: Apply SYSVIPC kABI Patches
+        run: |
+          cd kernel_workspace
+          git clone https://github.com/ko-kiyoshi/Action_OnePlus_MKSU_SUSFS
+          cd kernel_platform/common
+          echo "正在打SYSVIPC kABI补丁"
+          patch -p1 < ../../Action_OnePlus_MKSU_SUSFS/001.GKI-below-6.12-fix_sysvipc_kabi_6_7_8.patch
+
+      - name: Apply POSIX_MQUEUE kABI Patches
+        run: |
+          cd kernel_workspace/kernel_platform/common
+          echo "正在打POSIX_MQUEUE kABI补丁"
+          patch -p1 < ../../Action_OnePlus_MKSU_SUSFS/002.5.10_or_lower_use_android_abi_padding_for_posix_mqueue.patch
+
       - name: Apply LZ4KD
         run: |
           cd kernel_workspace/kernel_platform/common
@@ -238,6 +252,9 @@ jobs:
           cd kernel_workspace/kernel_platform
           CONFIG_FILE=./common/arch/arm64/configs/gki_defconfig
           KERNEL_VERSION="${{ github.event.inputs.KERNEL_VERSION }}"
+
+          rm "$CONFIG_FILE"
+          cp ../Action_OnePlus_MKSU_SUSFS/gki_defconfig "$CONFIG_FILE"
 
           # SukiSU Ultra config
           echo "CONFIG_KSU=y" >> "$CONFIG_FILE"
@@ -314,6 +331,8 @@ jobs:
               echo "CONFIG_ZRAM_WRITEBACK=y" >> "$CONFIG_FILE"
             fi
           fi
+
+          cat "$CONFIG_FILE"
 
       - name: Build kernel
         if: ${{ github.event.inputs.CPU == 'sm8650' || github.event.inputs.CPU == 'sm7675' }}
