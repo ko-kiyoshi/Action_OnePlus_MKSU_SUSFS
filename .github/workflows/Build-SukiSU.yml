@@ -2,6 +2,15 @@ name: Build OnePlus_SukiSU Ultra All
 on:
   workflow_dispatch:
     inputs:
+      patch:
+        type: choice
+        description: "补丁"
+        required: true
+        default: 1_2_3
+        options:
+          - 1_2_3
+          - 3_4_5
+          - 6_7_8
       CPU:
         type: choice
         description: "分支"
@@ -228,7 +237,7 @@ jobs:
           git clone https://github.com/ko-kiyoshi/Action_OnePlus_MKSU_SUSFS
           cd kernel_platform/common
           echo "正在打SYSVIPC kABI补丁"
-          patch -p1 < ../../Action_OnePlus_MKSU_SUSFS/001.GKI-below-6.12-fix_sysvipc_kabi_6_7_8.patch
+          patch -p1 < ../../Action_OnePlus_MKSU_SUSFS/001.GKI-below-6.12-fix_sysvipc_kabi_${{ github.event.inputs.patch }}.patch
 
       - name: Apply POSIX_MQUEUE kABI Patches
         run: |
