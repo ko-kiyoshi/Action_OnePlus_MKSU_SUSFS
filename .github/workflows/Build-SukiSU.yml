@@ -239,10 +239,6 @@ jobs:
           CONFIG_FILE=./common/arch/arm64/configs/gki_defconfig
           KERNEL_VERSION="${{ github.event.inputs.KERNEL_VERSION }}"
 
-          git clone https://github.com/ko-kiyoshi/Action_OnePlus_MKSU_SUSFS
-          rm "$CONFIG_FILE"
-          cp Action_OnePlus_MKSU_SUSFS/gki_defconfig "$CONFIG_FILE"
-
           # SukiSU Ultra config
           echo "CONFIG_KSU=y" >> "$CONFIG_FILE"
           echo "CONFIG_KPM=y" >> "$CONFIG_FILE"
@@ -318,8 +314,6 @@ jobs:
               echo "CONFIG_ZRAM_WRITEBACK=y" >> "$CONFIG_FILE"
             fi
           fi
-
-          cat "$CONFIG_FILE"
 
       - name: Build kernel
         if: ${{ github.event.inputs.CPU == 'sm8650' || github.event.inputs.CPU == 'sm7675' }}
