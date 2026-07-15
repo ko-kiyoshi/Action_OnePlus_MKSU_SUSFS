@@ -2,15 +2,6 @@ name: Build OnePlus_SukiSU Ultra All
 on:
   workflow_dispatch:
     inputs:
-      patch:
-        type: choice
-        description: "补丁"
-        required: true
-        default: "1_2_3"
-        options:
-          - "1_2_3"
-          - "3_4_5"
-          - "6_7_8"
       CPU:
         type: choice
         description: "分支"
@@ -231,19 +222,17 @@ jobs:
           echo "正在打隐藏应用补丁"
           patch -p1 -F 3 < 69_hide_stuff.patch
 
-      - name: Apply SYSVIPC kABI Patches
+      - name: Apply droidspaces Patches
         run: |
           cd kernel_workspace
           git clone https://github.com/ko-kiyoshi/Action_OnePlus_MKSU_SUSFS
           cd kernel_platform/common
-          echo "正在打SYSVIPC kABI补丁"
-          patch -p1 < ../../Action_OnePlus_MKSU_SUSFS/001.GKI-below-6.12-fix_sysvipc_kabi_${{ github.event.inputs.patch }}.patch
+          echo "正在打droidspaces补丁"
 
-      - name: Apply POSIX_MQUEUE kABI Patches
-        run: |
-          cd kernel_workspace/kernel_platform/common
-          echo "正在打POSIX_MQUEUE kABI补丁"
-          patch -p1 < ../../Action_OnePlus_MKSU_SUSFS/002.5.10_or_lower_use_android_abi_padding_for_posix_mqueue.patch
+          patch -p1 --forward < ../../Action_OnePlus_MKSU_SUSFS/fix_sysvipc_kabi_bypass_a16-6.12_below.patch
+          patch -p1 --forward < ../../Action_OnePlus_MKSU_SUSFS/fix_abi_padding_for_posix_mqueue.patch
+          patch -p1 --forward < ../../Action_OnePlus_MKSU_SUSFS/0001-Return-ghost-task-if-task-is-null-and-is-requested-b.patch
+          patch -p1 --forward < ../../Action_OnePlus_MKSU_SUSFS/0001-Guard-USER_NS-for-non-root-users.patch
 
       - name: Apply LZ4KD
         run: |
